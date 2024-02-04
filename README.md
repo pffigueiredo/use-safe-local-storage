@@ -1,30 +1,92 @@
-# React + TypeScript + Vite
+# use-safe-local-storage
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The **simplest** and **safest** way to manage local storage within a React application.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+npm install use-safe-local-storage
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Setup
+
+1- Define a `zod` schema for your local storage data.
+
+```typescript
+const localStorageSchema = z.object({
+  themePreference: z.enum(['light', 'dark']),
+  userSettings: z.object({
+    rememberPassword: z.boolean(),
+  }),
+});
+```
+
+2- Extract your type-safe hook/functions using the `defineLocalStorage` util.
+
+```typescript
+const localStorageSchema = z.object({
+  themePreference: z.enum(['light', 'dark', 'system']),
+  userSettings: z.object({
+    rememberPassword: z.boolean(),
+  }),
+});
+
+export const { useSafeLocalStorageSelector, setLocalStorage, getLocalStorage } =
+  defineLocalStorage({
+    schema: localStorageSchema,
+    initialValue: {
+      themePreference: 'system',
+      userSettings: { rememberPassword: true },
+    },
+    localStorageKey: 'local-storage-key',
+  });
+```
+
+## Usage within components
+
+Use the `useSafeLocalStorageSelector` hook to subscribe to fine-grained changes in your local storage.
+
+```typescript
+import { useSafeLocalStorageSelector } from 'local-storage';
+
+const MyComponent = () => {
+  // only re-renders when the `themePreference` key changes
+  const themePreference = useSafeLocalStorageSelector(
+    (state) => state.themePreference
+  );
+
+  return (
+    <div>
+      <h1>Theme Preference: {themePreference}</h1>
+    </div>
+  );
+};
+```
+
+## Usage outside of React components/hooks
+
+Use the `getLocalStorage` and `setLocalStorage` functions to interact with local storage.
+
+```typescript
+import { getLocalStorage, setLocalStorage } from 'local-storage';
+
+// isn't reactive, because it doesn't hook into the React lifecycle
+const themePreference = getLocalStorage((state) => state.themePreference);
+
+// dispatches a change to all subscribers of the `themePreference` key
+setLocalStorage((oldState) => ({ ...state, themePreference: 'dark' }));
+```
+
+## Extra features
+
+- **Type-safe**: The `zod` schema ensures that your local storage data is always in sync with your application's types.
+
+- **Reactive**: The `useSafeLocalStorageSelector` hook ensures that your components re-render when the local storage data changes.
+
+- **Performance**: The `useSafeLocalStorageSelector` hook uses a memoized selector to avoid unnecessary re-renders.
+
+- **Flexibility**: The `getLocalStorage` and `setLocalStorage` functions allow you to interact with local storage outside of React components/hooks.
+
+- **Customization**: The `defineLocalStorage` util allows you to define your own custom hooks and functions for interacting with local storage.
+
+- **Sync across tabs**: The `setLocalStorage` function uses the `storage` event to keep local storage in sync across all tabs.

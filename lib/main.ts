@@ -1,6 +1,6 @@
 import { z } from 'zod';
 // import { Paths } from 'type-fest';
-import React from 'react';
+import { useSyncExternalStore } from 'react';
 
 interface DefineLocalStorageProps<TSchema extends z.ZodTypeAny> {
   schema: TSchema;
@@ -99,38 +99,58 @@ function _setLocalStorage<T>(
   window.dispatchEvent(event);
 }
 
+// function _useSafeLocalStorageSelector<T, S>(
+//   schema: z.ZodTypeAny,
+//   initialValue: T,
+//   localStorageKey: string,
+//   selector: (value: T) => S
+// ) {
+//   const currentVal = selector(
+//     _getLocalStorage(schema, initialValue, localStorageKey)
+//   );
+//   const previousLocalStorageRef = React.useRef(currentVal);
+//   const [selectedValue, setSelectedValue] = React.useState(currentVal);
+
+//   React.useEffect(() => {
+//     const handleStorageChange = () => {
+//       const newVal = selector(
+//         _getLocalStorage(schema, initialValue, localStorageKey)
+//       );
+
+//       if (previousLocalStorageRef.current !== newVal) {
+//         setSelectedValue(newVal);
+//       }
+//       previousLocalStorageRef.current = newVal;
+//     };
+
+//     window.addEventListener(UPDATE_LOCAL_STORAGE_EVENT, handleStorageChange);
+//     return () => {
+//       window.removeEventListener(
+//         UPDATE_LOCAL_STORAGE_EVENT,
+//         handleStorageChange
+//       );
+//     };
+//   }, [initialValue, localStorageKey, schema, selector]);
+
+//   return selectedValue;
+// }
+
+const subscribe = (callback: () => void) => {
+  window.addEventListener(UPDATE_LOCAL_STORAGE_EVENT, callback);
+  return () => {
+    window.removeEventListener(UPDATE_LOCAL_STORAGE_EVENT, callback);
+  };
+};
+
 function _useSafeLocalStorageSelector<T, S>(
   schema: z.ZodTypeAny,
   initialValue: T,
   localStorageKey: string,
   selector: (value: T) => S
 ) {
-  const currentVal = selector(
-    _getLocalStorage(schema, initialValue, localStorageKey)
-  );
-  const previousLocalStorageRef = React.useRef(currentVal);
-  const [selectedValue, setSelectedValue] = React.useState(currentVal);
-
-  React.useEffect(() => {
-    const handleStorageChange = () => {
-      const newVal = selector(
-        _getLocalStorage(schema, initialValue, localStorageKey)
-      );
-
-      if (previousLocalStorageRef.current !== newVal) {
-        setSelectedValue(newVal);
-      }
-      previousLocalStorageRef.current = newVal;
-    };
-
-    window.addEventListener(UPDATE_LOCAL_STORAGE_EVENT, handleStorageChange);
-    return () => {
-      window.removeEventListener(
-        UPDATE_LOCAL_STORAGE_EVENT,
-        handleStorageChange
-      );
-    };
-  }, [initialValue, localStorageKey, schema, selector]);
+  const snapshot = () =>
+    selector(_getLocalStorage(schema, initialValue, localStorageKey));
+  const selectedValue = useSyncExternalStore(subscribe, snapshot);
 
   return selectedValue;
 }

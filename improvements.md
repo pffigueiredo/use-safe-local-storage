@@ -1,0 +1,3 @@
+- more granular error handling
+- migrations
+- options for lazy initializing
