@@ -1,8 +1,8 @@
 # use-safe-local-storage
 
-![](./use-safe-local-storage.gif)
-
 The **simplest** and **safest** way to manage local storage within a React application.
+
+![](./use-safe-local-storage.gif)
 
 ## Installation
 
