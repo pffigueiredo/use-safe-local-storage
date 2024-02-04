@@ -1,6 +1,7 @@
 import { z } from 'zod';
 // import { Paths } from 'type-fest';
-import { useSyncExternalStore } from 'react';
+import isEqual from 'lodash.isequal';
+import { useRef, useSyncExternalStore } from 'react';
 
 interface DefineLocalStorageProps<TSchema extends z.ZodTypeAny> {
   schema: TSchema;
@@ -148,9 +149,23 @@ function _useSafeLocalStorageSelector<T, S>(
   localStorageKey: string,
   selector: (value: T) => S
 ) {
-  const snapshot = () =>
-    selector(_getLocalStorage(schema, initialValue, localStorageKey));
-  const selectedValue = useSyncExternalStore(subscribe, snapshot);
+  const refValue = useRef(
+    selector(_getLocalStorage(schema, initialValue, localStorageKey))
+  );
 
+  const snapshot = () => {
+    const newVal = selector(
+      _getLocalStorage(schema, initialValue, localStorageKey)
+    );
+
+    if (isEqual(refValue.current, newVal)) {
+      return refValue.current;
+    }
+
+    refValue.current = newVal;
+    return newVal;
+  };
+
+  const selectedValue = useSyncExternalStore(subscribe, snapshot);
   return selectedValue;
 }

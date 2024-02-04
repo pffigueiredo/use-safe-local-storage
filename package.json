@@ -20,6 +20,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/lodash.isequal": "^4.5.8",
     "@types/node": "^20.11.16",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
@@ -33,8 +34,12 @@
     "react-dom": "^18.2.0",
     "type-fest": "^4.10.1",
     "typescript": "^5.2.2",
+    "use-safe-local-storage": "^0.0.1",
     "vite": "^5.0.8",
     "vite-plugin-dts": "^3.7.2",
     "zod": "^3.22.4"
+  },
+  "dependencies": {
+    "lodash.isequal": "^4.5.0"
   }
 }

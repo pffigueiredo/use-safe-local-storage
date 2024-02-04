@@ -4,7 +4,15 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+dependencies:
+  lodash.isequal:
+    specifier: ^4.5.0
+    version: 4.5.0
+
 devDependencies:
+  '@types/lodash.isequal':
+    specifier: ^4.5.8
+    version: 4.5.8
   '@types/node':
     specifier: ^20.11.16
     version: 20.11.16
@@ -44,6 +52,9 @@ devDependencies:
   typescript:
     specifier: ^5.2.2
     version: 5.3.3
+  use-safe-local-storage:
+    specifier: ^0.0.1
+    version: 0.0.1(react@18.2.0)(zod@3.22.4)
   vite:
     specifier: ^5.0.8
     version: 5.0.12(@types/node@20.11.16)
@@ -834,6 +845,16 @@ packages:
 
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+    dev: true
+
+  /@types/lodash.isequal@4.5.8:
+    resolution: {integrity: sha512-uput6pg4E/tj2LGxCZo9+y27JNyB2OZuuI/T5F+ylVDYuqICLG2/ktjxx0v6GvVntAf8TvEzeQLcV0ffRirXuA==}
+    dependencies:
+      '@types/lodash': 4.14.202
+    dev: true
+
+  /@types/lodash@4.14.202:
+    resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
     dev: true
 
   /@types/node@20.11.16:
@@ -1774,7 +1795,6 @@ packages:
 
   /lodash.isequal@4.5.0:
     resolution: {integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==}
-    dev: true
 
   /lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -2193,6 +2213,16 @@ packages:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
     dependencies:
       punycode: 2.3.1
+    dev: true
+
+  /use-safe-local-storage@0.0.1(react@18.2.0)(zod@3.22.4):
+    resolution: {integrity: sha512-GnhaHvtm4N2vZGG2GGeVRzx6XhoqpGpiAv+M78b9VXCbTsbjN+GLeGgSTLYXVMY1u7G1sirtqs1LoNMOah7e9Q==}
+    peerDependencies:
+      react: ^18.2.0
+      zod: ^3.22.4
+    dependencies:
+      react: 18.2.0
+      zod: 3.22.4
     dev: true
 
   /validator@13.11.0:
